@@ -27,4 +27,8 @@ object OutputView {
     fun displayMembershipPrompt() {
         println(OutputMessage.MEMBERSHIP_DISCOUNT_CONFIRM)
     }
+
+    fun displayError(message: String) {
+        println(message)
+    }
 }
