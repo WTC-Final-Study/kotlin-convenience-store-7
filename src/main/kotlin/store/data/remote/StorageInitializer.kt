@@ -7,8 +7,8 @@ import store.data.remote.model.ProductRaw
 import store.data.remote.model.PromotionRaw
 
 class StorageInitializer(
-    private val dataSource: FileDataSource,
-    private val storage: Storage
+    private val dataSource: FileDataSource = FileDataSource,
+    private val storage: Storage = Storage
 ) {
     fun init() {
         initPromotion()
