@@ -1,11 +1,9 @@
 package store.domain.repository
 
 import store.domain.model.Product
-import store.domain.model.Promotion
+import store.domain.model.ProductStock
 
 interface StorageRepository {
 
-    fun getProducts(): List<Product>
-
-    fun updateProduct(sold: List<Product>)
+    fun getProductStocks(): List<ProductStock>
 }
