@@ -13,7 +13,8 @@ class StorageRepository(
         val productEntities = storage.products
 
         return productEntities.map { entity ->
-            val promotion = promotions.find { it.name == entity.name }
+            val promotion = promotions.find { it.name == entity.promotion }
+            println(promotion)
             entity.toDomain(promotion)
         }
     }
