@@ -16,7 +16,7 @@ class Controller {
         purchase()
     }
 
-    fun purchase(): List<OrderItem> {
+    private fun purchase(): List<OrderItem> {
         OutputView.displayPurchasePrompt()
         while (true) {
             try {
@@ -25,6 +25,16 @@ class Controller {
                 return InputParser.parsePurchaseItem(input)
             } catch (e: IllegalArgumentException) {
                 OutputView.displayError(e.message ?: ErrorType.UNKNOWN.toString())
+            }
+        }
+    }
+
+    private inline fun <T> retryUntilValid(block: () -> T): T {
+        while (true) {
+            try {
+                return block()
+            } catch (e: IllegalArgumentException) {
+                OutputView.displayError(e.message ?: ErrorType.UNKNOWN.message)
             }
         }
     }
