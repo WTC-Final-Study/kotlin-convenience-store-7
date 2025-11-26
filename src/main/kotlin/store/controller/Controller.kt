@@ -18,14 +18,10 @@ class Controller {
 
     private fun purchase(): List<OrderItem> {
         OutputView.displayPurchasePrompt()
-        while (true) {
-            try {
-                val input = InputView.read()
 
-                return InputParser.parsePurchaseItem(input)
-            } catch (e: IllegalArgumentException) {
-                OutputView.displayError(e.message ?: ErrorType.UNKNOWN.toString())
-            }
+        return retryUntilValid {
+            val input = InputView.read()
+            InputParser.parsePurchaseItem(input)
         }
     }
 
