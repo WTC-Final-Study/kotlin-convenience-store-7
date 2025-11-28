@@ -62,4 +62,8 @@ object OutputView {
         println(OutputMessage.RECEIPT_DISCOUNT.format("멤버십할인", receipt.membershipDiscount))
         println(OutputMessage.RECEIPT_FINAL_AMOUNT.format(receipt.finalAmount))
     }
+
+    fun displayContinuePurchasePrompt() {
+        println(OutputMessage.CONTINUE_PURCHASE_CONFIRM)
+    }
 }
