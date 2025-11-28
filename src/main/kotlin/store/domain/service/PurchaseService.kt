@@ -57,4 +57,41 @@ class PurchaseService(
         val prevCount = orderItems[idx].count
         orderItems[idx] = orderItems[idx].copy(count = prevCount + extra)
     }
+
+    fun getNonPromotionCount(item: OrderItem): Int {
+        val productStock = productStocks.find { it.product.name == item.name } ?: return 0
+        val promotion = productStock.promotion ?: return 0
+        if (!promotion.isActive(today)) return 0
+
+        return calculateNonPromotionCount(item.count, promotion, productStock.promotionQuantity)
+    }
+
+    private fun calculateNonPromotionCount(
+        orderCount: Int,
+        promotion: Promotion,
+        promotionQuantity: Int
+    ): Int {
+        if (orderCount <= promotionQuantity) return 0
+
+        val promotionSetSize = promotion.buy + promotion.get
+
+        val maxSetByOrder = orderCount / promotionSetSize
+        val maxSetByQuantity = promotionQuantity / promotionSetSize
+
+        if (maxSetByQuantity >= maxSetByOrder) return 0
+
+        return orderCount - maxSetByQuantity * promotionSetSize
+    }
+
+    fun cancelOrder(name: String, count: Int) {
+        val idx = orderItems.indexOfFirst { it.name == name }
+        if (idx < 0) return
+
+        val updated = orderItems[idx].count - count
+        if (updated <= 0) {
+            orderItems.removeAt(idx)
+            return
+        }
+        orderItems[idx] = orderItems[idx].copy(count = updated)
+    }
 }

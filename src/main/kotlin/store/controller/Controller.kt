@@ -20,9 +20,9 @@ class Controller {
     }
 
     private fun purchase() {
-        OutputView.displayPurchasePrompt()
         val orderItems = getOrderItems()
         handleMoreBenefit(orderItems)
+        handleNonPromotion(orderItems)
     }
 
     private fun getOrderItems(): List<OrderItem> {
@@ -47,6 +47,25 @@ class Controller {
 
     private fun confirmExtraPromotion(name: String, extra: Int): Boolean {
         OutputView.displayExtraPrompt(name, extra)
+        return retryUntilValid {
+            val input = InputView.read()
+            InputParser.parseYesOrNo(input)
+        }
+    }
+
+    private fun handleNonPromotion(orderItem: List<OrderItem>) {
+        for (item in orderItem) {
+            val nonPromotionCount = purchaseService.getNonPromotionCount(item)
+
+            if (nonPromotionCount == 0) continue
+
+            if (confirmNonPromotion(item.name, nonPromotionCount)) continue
+            purchaseService.cancelOrder(item.name, nonPromotionCount)
+        }
+    }
+
+    private fun confirmNonPromotion(name: String, count: Int): Boolean {
+        OutputView.displayNonPromotionPrompt(name, count)
         return retryUntilValid {
             val input = InputView.read()
             InputParser.parseYesOrNo(input)
