@@ -104,8 +104,33 @@ class PurchaseService(
         return Receipt(
             orderItems = orderItems,
             promotionItems = freeItems,
-            hasMembershipDiscount = hasMembershipDiscount
+            membershipBaseAmount = if (hasMembershipDiscount) getMembershipBaseAmount() else 0
         )
+    }
+
+    private fun getMembershipBaseAmount(): Int {
+        return orderItems.sumOf { item ->
+            val stock = productStocks.find { it.product.name == item.product.name } ?: return@sumOf 0
+
+            val appliedPromotionCount =
+                getAppliedPromotion(stock.promotion, item.count, stock.promotionQuantity)
+
+            val nonPromotionCount = (item.count - appliedPromotionCount).coerceAtLeast(0)
+            nonPromotionCount * item.product.price
+        }
+    }
+
+    private fun getAppliedPromotion(
+        promotion: Promotion?,
+        orderCount: Int,
+        promotionQuantity: Int
+    ): Int {
+        promotion ?: return 0
+        val promotionSetSize = promotion.buy + promotion.get
+
+        val maxSetByOrder = orderCount / promotionSetSize
+        val maxSetByQuantity = promotionQuantity / promotionSetSize
+        return minOf(maxSetByOrder, maxSetByQuantity) * promotionSetSize
     }
 
     private fun getPromotionFreeItems(): List<OrderItem> {
