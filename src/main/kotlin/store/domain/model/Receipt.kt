@@ -1,5 +1,8 @@
 package store.domain.model
 
+import store.common.Constants.MEMBERSHIP_DISCOUNT_MAX
+import store.common.Constants.MEMBERSHIP_DISCOUNT_RATE
+
 data class Receipt(
     val orderItems: List<OrderItem>,
     val promotionItems: List<OrderItem>,
@@ -10,7 +13,7 @@ data class Receipt(
 
     val promotionDiscount get() = promotionItems.sumOf { it.product.price * it.count }
     val membershipDiscount: Int
-        get() = (membershipBaseAmount * 30 / 100).coerceAtMost(8000)
+        get() = (membershipBaseAmount * MEMBERSHIP_DISCOUNT_RATE / 100).coerceAtMost(MEMBERSHIP_DISCOUNT_MAX)
 
     val finalAmount get() = totalPrice - promotionDiscount - membershipDiscount
 }

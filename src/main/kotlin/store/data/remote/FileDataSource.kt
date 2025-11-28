@@ -1,5 +1,6 @@
 package store.data.remote
 
+import store.common.ErrorType
 import store.data.remote.model.ProductRaw
 import store.data.remote.model.PromotionRaw
 
@@ -40,7 +41,7 @@ object FileDataSource {
 
     private fun read(path: String): List<String> {
         val stream = object {}.javaClass.getResourceAsStream(path)
-            ?: throw IllegalArgumentException("리소스 없음: $path")
+            ?: throw IllegalArgumentException(ErrorType.NO_RESOURCE.message)
         return stream.bufferedReader().use { it.readLines() }
     }
 }

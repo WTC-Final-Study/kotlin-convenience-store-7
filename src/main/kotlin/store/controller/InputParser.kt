@@ -1,5 +1,7 @@
 package store.controller
 
+import store.common.Constants.ACCEPT
+import store.common.Constants.REJECT
 import store.common.ErrorType
 
 object InputParser {
@@ -23,8 +25,8 @@ object InputParser {
         require(input.isNotBlank()) { ErrorType.INVALID_INPUT }
 
         val parsed = input.trim().lowercase()
-        require(parsed == "y" || parsed == "n") { ErrorType.INVALID_INPUT }
+        require(parsed == ACCEPT || parsed == REJECT) { ErrorType.INVALID_INPUT }
 
-        return parsed == "y"
+        return parsed == ACCEPT
     }
 }

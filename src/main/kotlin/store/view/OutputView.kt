@@ -1,5 +1,7 @@
 package store.view
 
+import store.common.Constants.LABEL_MEMBERSHIP_DISCOUNT
+import store.common.Constants.LABEL_PROMOTION_DISCOUNT
 import store.domain.model.OrderItem
 import store.domain.model.Receipt
 import store.presentation.model.ProductUi
@@ -58,8 +60,8 @@ object OutputView {
     private fun displayTotal(receipt: Receipt) {
         println(OutputMessage.RECEIPT_DIVIDER)
         println(OutputMessage.RECEIPT_TOTAL_PRICE.format(receipt.totalCount, receipt.totalPrice))
-        println(OutputMessage.RECEIPT_DISCOUNT.format("행사할인", receipt.promotionDiscount))
-        println(OutputMessage.RECEIPT_DISCOUNT.format("멤버십할인", receipt.membershipDiscount))
+        println(OutputMessage.RECEIPT_DISCOUNT.format(LABEL_PROMOTION_DISCOUNT, receipt.promotionDiscount))
+        println(OutputMessage.RECEIPT_DISCOUNT.format(LABEL_MEMBERSHIP_DISCOUNT, receipt.membershipDiscount))
         println(OutputMessage.RECEIPT_FINAL_AMOUNT.format(receipt.finalAmount))
     }
 
