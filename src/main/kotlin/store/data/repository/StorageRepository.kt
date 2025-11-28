@@ -17,4 +17,10 @@ class StorageRepository(
             entity.toDomain(promotion)
         }
     }
+
+    fun updateStock(name: String, promoDelta: Int, generalDelta: Int) {
+        val productEntity = storage.products.find { it.name == name } ?: return
+        productEntity.promotion_quantity += promoDelta
+        productEntity.general_quantity += generalDelta
+    }
 }

@@ -4,6 +4,7 @@ import store.common.ErrorType
 import store.domain.model.OrderItem
 import store.domain.model.Product
 import store.domain.model.ProductStock
+import store.domain.model.SoldProduct
 import store.domain.model.Promotion
 import store.domain.model.Receipt
 import java.time.LocalDate
@@ -129,5 +130,48 @@ class PurchaseService(
         val appliedSet = minOf(maxSetByOrder, maxSetByQuantity)
 
         return appliedSet * promotion.get
+    }
+
+    fun completePurchase() {
+        val soldItems = orderItems.mapNotNull { item ->
+            val stock = productStocks.find { it.product.name == item.product.name } ?: return@mapNotNull null
+
+            calculateUsage(item, stock)
+        }
+        storageService.updateStorage(soldItems)
+    }
+
+    private fun calculateUsage(sold: OrderItem, stock: ProductStock): SoldProduct {
+        val (usedPromotion, usedGeneral) =
+            if (isInPromotion(stock.promotion)) calculateUsageWithPromotionPriority(sold.count, stock)
+            else calculateUsageWithGeneralPriority(sold.count, stock)
+
+        return SoldProduct(
+            product = sold.product,
+            usedPromotion = usedPromotion,
+            usedGeneral = usedGeneral
+        )
+    }
+
+    private fun calculateUsageWithPromotionPriority(
+        count: Int,
+        stock: ProductStock
+    ): Pair<Int, Int> {
+        val promo = (count).coerceAtMost(stock.promotionQuantity)
+        val general = count - promo
+        return promo to general
+    }
+
+    private fun calculateUsageWithGeneralPriority(
+        count: Int,
+        stock: ProductStock
+    ): Pair<Int, Int> {
+        val general = (count).coerceAtMost(stock.generalQuantity)
+        val promo = count - general
+        return promo to general
+    }
+
+    private fun isInPromotion(promotion: Promotion?): Boolean {
+        return promotion?.isActive(today) ?: false
     }
 }
