@@ -5,6 +5,7 @@ import store.domain.model.OrderItem
 import store.domain.model.Product
 import store.domain.model.ProductStock
 import store.domain.model.Promotion
+import store.domain.model.Receipt
 import java.time.LocalDate
 
 class PurchaseService(
@@ -94,5 +95,39 @@ class PurchaseService(
             return
         }
         orderItems[idx] = orderItems[idx].copy(count = updated)
+    }
+
+    fun createReceipt(hasMembershipDiscount: Boolean): Receipt {
+        val freeItems = getPromotionFreeItems()
+
+        return Receipt(
+            orderItems = orderItems,
+            promotionItems = freeItems,
+            hasMembershipDiscount = hasMembershipDiscount
+        )
+    }
+
+    private fun getPromotionFreeItems(): List<OrderItem> {
+        return orderItems.mapNotNull { item ->
+            val productStock = productStocks.find { it.product.name == item.product.name } ?: return@mapNotNull null
+            val promotion = productStock.promotion ?: return@mapNotNull null
+
+            if (!promotion.isActive(today)) return@mapNotNull null
+
+            val freeItemCount = getFreeItemCount(promotion, item, productStock.promotionQuantity)
+            if (freeItemCount == 0) return@mapNotNull null
+            OrderItem(item.product, freeItemCount)
+        }
+    }
+
+    private fun getFreeItemCount(promotion: Promotion, item: OrderItem, promotionQuantity: Int): Int {
+        val promotionSetSize = promotion.buy + promotion.get
+
+        val maxSetByOrder = item.count / promotionSetSize
+        val maxSetByQuantity = promotionQuantity / promotionSetSize
+
+        val appliedSet = minOf(maxSetByOrder, maxSetByQuantity)
+
+        return appliedSet * promotion.get
     }
 }
