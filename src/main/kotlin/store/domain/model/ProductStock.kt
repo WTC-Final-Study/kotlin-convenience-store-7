@@ -7,4 +7,8 @@ data class ProductStock(
     val generalQuantity: Int = 0
 ) {
     val totalQuantity get() = promotionQuantity + generalQuantity
+
+    fun isEnough(count: Int): Boolean {
+        return count <= totalQuantity
+    }
 }
