@@ -3,7 +3,7 @@ package store.domain.model
 import store.common.Constants.MEMBERSHIP_DISCOUNT_MAX
 import store.common.Constants.MEMBERSHIP_DISCOUNT_RATE
 
-data class Receipt(
+class Receipt(
     val orderItems: List<OrderItem>,
     val promotionItems: List<OrderItem>,
     val membershipBaseAmount: Int
