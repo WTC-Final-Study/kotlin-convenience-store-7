@@ -2,6 +2,7 @@ package store.controller
 
 import store.common.ErrorType
 import store.domain.model.OrderItem
+import store.domain.model.Receipt
 import store.domain.service.PurchaseService
 import store.domain.service.StorageService
 import store.presentation.mapper.UiMapper.toUiList
@@ -23,6 +24,9 @@ class Controller {
         val orderItems = getOrderItems()
         handleMoreBenefit(orderItems)
         handleNonPromotion(orderItems)
+        val hasMembership = confirmMembershipDiscount()
+        val receipt = purchaseService.createReceipt(hasMembership)
+        showReceipt(receipt)
     }
 
     private fun getOrderItems(): List<OrderItem> {
@@ -70,6 +74,18 @@ class Controller {
             val input = InputView.read()
             InputParser.parseYesOrNo(input)
         }
+    }
+
+    private fun confirmMembershipDiscount(): Boolean {
+        OutputView.displayMembershipPrompt()
+        return retryUntilValid {
+            val input = InputView.read()
+            InputParser.parseYesOrNo(input)
+        }
+    }
+
+    private fun showReceipt(receipt: Receipt) {
+        OutputView.displayReceipt(receipt)
     }
 
     private inline fun <T> retryUntilValid(block: () -> T): T {
