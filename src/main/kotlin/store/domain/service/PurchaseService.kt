@@ -2,6 +2,7 @@ package store.domain.service
 
 import store.common.ErrorType
 import store.domain.model.OrderItem
+import store.domain.model.Product
 import store.domain.model.ProductStock
 import store.domain.model.Promotion
 import java.time.LocalDate
@@ -13,28 +14,28 @@ class PurchaseService(
     private val productStocks = storageService.getProductStocks()
     private val orderItems: MutableList<OrderItem> = mutableListOf()
 
-    fun order(items: List<OrderItem>): List<OrderItem> {
-        items.groupBy { it.name }
-            .forEach { (name, order) ->
-                val total = order.sumOf { it.count }
-                orderItems.add(OrderItem(name, total))
-            }
-        validateOrderItems()
+    fun order(items: Map<String, Int>): List<OrderItem> {
+        items.forEach { (name, count) ->
+            orderItems.add(
+                OrderItem(
+                    findProduct(name, count), count
+                )
+            )
+        }
         return orderItems
     }
 
-    private fun validateOrderItems() {
-        orderItems.forEach { (name, count) ->
-            require(count > 0) { ErrorType.INVALID_PURCHASE_FORMAT }
+    private fun findProduct(name: String, count: Int): Product {
+        val productStock = productStocks.find { it.product.name == name }
+        require(productStock != null) { ErrorType.PRODUCT_NOT_FOUND }
+        require(productStock.isEnough(count)) { ErrorType.OUT_OF_STOCK_AMOUNT }
+        require(count > 0) { ErrorType.INVALID_PURCHASE_FORMAT }
 
-            val product = productStocks.find { it.product.name == name }
-            require(product != null) { ErrorType.PRODUCT_NOT_FOUND }
-            require(product.isEnough(count)) { ErrorType.OUT_OF_STOCK_AMOUNT }
-        }
+        return productStock.product
     }
 
     fun extraCountForPromotion(item: OrderItem): Int {
-        val productStock = productStocks.find { it.product.name == item.name } ?: return 0
+        val productStock = productStocks.find { it.product.name == item.product.name } ?: return 0
         val promotion = productStock.promotion ?: return 0
         if (!promotion.isActive(today)) return 0
 
@@ -51,7 +52,7 @@ class PurchaseService(
     }
 
     fun addExtraItem(name: String, extra: Int) {
-        val idx = orderItems.indexOfFirst { it.name == name }
+        val idx = orderItems.indexOfFirst { it.product.name == name }
         if (idx < 0) return
 
         val prevCount = orderItems[idx].count
@@ -59,7 +60,7 @@ class PurchaseService(
     }
 
     fun getNonPromotionCount(item: OrderItem): Int {
-        val productStock = productStocks.find { it.product.name == item.name } ?: return 0
+        val productStock = productStocks.find { it.product.name == item.product.name } ?: return 0
         val promotion = productStock.promotion ?: return 0
         if (!promotion.isActive(today)) return 0
 
@@ -84,7 +85,7 @@ class PurchaseService(
     }
 
     fun cancelOrder(name: String, count: Int) {
-        val idx = orderItems.indexOfFirst { it.name == name }
+        val idx = orderItems.indexOfFirst { it.product.name == name }
         if (idx < 0) return
 
         val updated = orderItems[idx].count - count

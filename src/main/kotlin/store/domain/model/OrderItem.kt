@@ -1,6 +1,6 @@
 package store.domain.model
 
 data class OrderItem(
-    val name: String,
+    val product: Product,
     val count: Int
 )

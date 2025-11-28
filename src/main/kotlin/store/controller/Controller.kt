@@ -40,8 +40,8 @@ class Controller {
             val extraCount = purchaseService.extraCountForPromotion(item)
             if (extraCount == 0) continue
 
-            if (!confirmExtraPromotion(item.name, extraCount)) continue
-            purchaseService.addExtraItem(item.name, extraCount)
+            if (!confirmExtraPromotion(item.product.name, extraCount)) continue
+            purchaseService.addExtraItem(item.product.name, extraCount)
         }
     }
 
@@ -59,8 +59,8 @@ class Controller {
 
             if (nonPromotionCount == 0) continue
 
-            if (confirmNonPromotion(item.name, nonPromotionCount)) continue
-            purchaseService.cancelOrder(item.name, nonPromotionCount)
+            if (confirmNonPromotion(item.product.name, nonPromotionCount)) continue
+            purchaseService.cancelOrder(item.product.name, nonPromotionCount)
         }
     }
 
