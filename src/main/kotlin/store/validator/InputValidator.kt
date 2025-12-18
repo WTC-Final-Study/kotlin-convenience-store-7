@@ -10,7 +10,8 @@ object InputValidator {
             require(order.startsWith("[")) { ErrorMessage.INVALID_FORMAT.toString() }
             require(order.endsWith("]")) { ErrorMessage.INVALID_FORMAT.toString() }
             require(order.contains("-")) { ErrorMessage.INVALID_FORMAT.toString() }
-            val quantity = order.split("-")[1].toIntOrNull()
+            val filterOrder = order.removePrefix("[").removeSuffix("]")
+            val quantity = filterOrder.split("-")[1].toIntOrNull()
             require(quantity != null) { ErrorMessage.INVALID_FORMAT.toString() }
         }
     }
