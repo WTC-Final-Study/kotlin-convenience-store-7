@@ -8,19 +8,20 @@ import java.time.format.DateTimeFormatter
 
 class PromotionManager {
 
-    val promotions: List<Promotion>
+    val promotions: Map<String, Promotion>
 
     init {
         promotions = loadPromotions()
     }
 
-    private fun loadPromotions(): List<Promotion> {
-        val promotions = mutableListOf<Promotion>()
+    private fun loadPromotions(): Map<String, Promotion> {
+        val promotions = mutableMapOf<String, Promotion>()
         val filePath = "src/main/resources/promotions.md"
         val file = File(filePath)
         file.readLines().drop(1).forEach { line ->
             val splitLine = line.split(",")
-            promotions.add(transformPromotion(splitLine))
+            val promotion = transformPromotion(splitLine)
+            promotions[promotion.name] = promotion
         }
         return promotions
     }
