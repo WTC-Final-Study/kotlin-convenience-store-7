@@ -20,6 +20,7 @@ object OutputView {
             val promotion = product.promotion
             println("- $name ${price}원 $quantity $promotion")
         }
+        println()
     }
 
     private fun numberDecimal(input: Int): String {

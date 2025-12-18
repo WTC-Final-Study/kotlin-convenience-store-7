@@ -1,0 +1,9 @@
+package store.constant
+
+enum class InputMessage(val text: String) {
+    ORDER("구매하실 상품명과 수량을 입력해 주세요. (예: [사이다-2],[감자칩-1])");
+
+    override fun toString(): String {
+        return text
+    }
+}
