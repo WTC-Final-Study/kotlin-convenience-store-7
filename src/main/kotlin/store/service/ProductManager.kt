@@ -48,6 +48,14 @@ class ProductManager {
         return null
     }
 
+    fun getProductHasPromotion(ids: List<String>): Product? {
+        ids.forEach { id ->
+            val product = inventory[id]
+            if(product!!.promotion != null) return product
+        }
+        return null
+    }
+
 
     private fun loadProducts(): MutableMap<String, Product> {
         val products = mutableMapOf<String, Product>()

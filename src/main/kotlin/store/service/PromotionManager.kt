@@ -23,6 +23,9 @@ class PromotionManager {
         return false
     }
 
+    fun getPromotion(name: String?): Promotion? {
+        return promotions[name]
+    }
 
     private fun loadPromotions(): Map<String, Promotion> {
         val promotions = mutableMapOf<String, Promotion>()
