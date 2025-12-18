@@ -16,6 +16,7 @@ class ConvenienceController {
         val promotionManager = PromotionManager()
         startMessage(productManager.inventory)
         val orders = inputOrder()
+        checkMenu(orders, productManager)
     }
 
     private fun startMessage(inventory: Map<String, Product>) {
@@ -28,5 +29,9 @@ class ConvenienceController {
         val rawOrder = InputView.input(InputMessage.ORDER.toString())
         InputValidator.validateOrders(rawOrder)
         return orders
+    }
+
+    private fun checkMenu(orders: List<Order>, productManager: ProductManager) {
+        productManager.checkOrder(orders)
     }
 }

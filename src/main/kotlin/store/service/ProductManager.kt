@@ -1,5 +1,6 @@
 package store.service
 
+import store.constant.ErrorMessage
 import store.model.Order
 import store.model.Product
 import java.io.File
@@ -16,8 +17,26 @@ class ProductManager {
 
     fun checkOrder(orders: List<Order>) {
         orders.forEach { order ->
-            // 상품이 존재하는지, 주문 수량이 재고를 초과하지 않는지 )
+            val ids = getIdsByName(order.name)
+            require(!ids.isEmpty()) { ErrorMessage.INVALID_MENU.toString() }
+            val inventoryQuantity = ids.sumOf { id ->
+                getProductById(id).quantity ?: 0
+            }
+            require(order.quantity >= 0) { ErrorMessage.INVALID_ORDER.toString() }
+            require(inventoryQuantity >= order.quantity) { ErrorMessage.MANY_QUANTITY.toString() }
         }
+    }
+
+    fun getIdsByName(name: String): List<String> {
+        val ids = mutableListOf<String>()
+        inventory.forEach { id, product ->
+            if(product.name == name) ids.add(id)
+        }
+        return ids
+    }
+
+    fun getProductById(id: String): Product {
+        return inventory[id]!!
     }
 
 
