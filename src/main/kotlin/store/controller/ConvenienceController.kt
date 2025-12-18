@@ -46,7 +46,6 @@ class ConvenienceController {
             val productId = productManager.getIdsByName(order.name)
             val promotion = productManager.getPromotionName(productId)
             if(promotionManager.isPromotionDay(promotion)) {
-                val product = productManager.getProductById(productId)
                 progressPromotion()
             }
         }

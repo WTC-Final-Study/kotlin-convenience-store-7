@@ -17,7 +17,7 @@ object OutputView {
             val name = product.name
             val price = numberDecimal(product.price)
             val quantity = if(product.quantity == 0) "재고 없음" else "${product.quantity}개"
-            val promotion = product.promotion
+            val promotion = if(product.promotion == null) "" else product.promotion
             println("- $name ${price}원 $quantity $promotion")
         }
         println()
