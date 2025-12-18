@@ -1,7 +1,7 @@
 # kotlin-convenience-store-precourse
 
 ## 1. 초기 설정
-- [ ] 상품 목록 저장하기
+- [x] 상품 목록 저장하기
 - [ ] 프로모션 목록 저장하기
 
 ## 2. 프로그램 시작
