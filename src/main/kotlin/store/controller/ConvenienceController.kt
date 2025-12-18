@@ -18,7 +18,7 @@ class ConvenienceController {
         val orders = inputOrder()
     }
 
-    private fun startMessage(inventory: List<Product>) {
+    private fun startMessage(inventory: Map<String, Product>) {
         OutputView.printMessage(OutputMessage.GREETING.toString())
         OutputView.printInventory(inventory)
     }

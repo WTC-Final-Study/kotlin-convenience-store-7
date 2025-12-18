@@ -10,10 +10,10 @@ object OutputView {
         println(message)
     }
 
-    fun printInventory(inventory: List<Product>) {
+    fun printInventory(inventory: Map<String, Product>) {
         println(OutputMessage.INVENTORY_TITLE.toString())
         println()
-        inventory.forEach { product ->
+        inventory.forEach { (key, product) ->
             val name = product.name
             val price = numberDecimal(product.price)
             val quantity = if(product.quantity == 0) "재고 없음" else "${product.quantity}개"
