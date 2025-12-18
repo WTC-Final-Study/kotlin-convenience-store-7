@@ -58,7 +58,7 @@ class ProductManager {
         val name = line[0]
         val price = line[1].toInt()
         val quantity = line[2].toInt()
-        val promotion = line[3]
+        val promotion = if(line[3] == "null") null else line[3]
 
         return Product(name, price, quantity, promotion)
     }
