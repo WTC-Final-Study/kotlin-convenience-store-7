@@ -17,12 +17,12 @@ class ProductManager {
         val file = File(filePath)
         file.readLines().drop(1).forEach { line ->
             val splitLine = line.split(",")
-            products.add(translatePromotion(splitLine))
+            products.add(transformPromotion(splitLine))
         }
         return products
     }
 
-    private fun translatePromotion(line: List<String>): Product {
+    private fun transformPromotion(line: List<String>): Product {
         val name = line[0]
         val price = line[1].toInt()
         val quantity = line[2].toInt()
