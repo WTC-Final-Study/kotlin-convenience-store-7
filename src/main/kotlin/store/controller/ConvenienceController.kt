@@ -16,7 +16,7 @@ class ConvenienceController {
         val promotionManager = PromotionManager()
         startMessage(productManager.inventory)
         val orders = inputOrder()
-        checkMenu(orders, productManager)
+        checkMenu(orders, productManager, promotionManager)
     }
 
     private fun startMessage(inventory: Map<String, Product>) {
@@ -31,7 +31,28 @@ class ConvenienceController {
         return orders
     }
 
-    private fun checkMenu(orders: List<Order>, productManager: ProductManager) {
+    private fun checkMenu(orders: List<Order>,
+                          productManager: ProductManager,
+                          promotionManager: PromotionManager) {
         productManager.checkOrder(orders)
+        checkPromotionDay(orders, productManager, promotionManager)
+    }
+
+    private fun checkPromotionDay(
+        orders: List<Order>,
+        productManager: ProductManager,
+        promotionManager: PromotionManager) {
+        orders.forEach { order ->
+            val productId = productManager.getIdsByName(order.name)
+            val promotion = productManager.getPromotionName(productId)
+            if(promotionManager.isPromotionDay(promotion)) {
+                val product = productManager.getProductById(productId)
+                progressPromotion()
+            }
+        }
+    }
+
+    private fun progressPromotion() {
+
     }
 }

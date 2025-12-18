@@ -38,6 +38,15 @@ class ProductManager {
     fun getProductById(id: String): Product {
         return inventory[id]!!
     }
+    
+
+    fun getPromotionName(ids: List<String>): String? {
+        ids.forEach { id ->
+            val promotion = inventory[id]!!.promotion
+            if(promotion != null) return promotion
+        }
+        return null
+    }
 
 
     private fun loadProducts(): MutableMap<String, Product> {

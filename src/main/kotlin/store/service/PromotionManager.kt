@@ -1,5 +1,6 @@
 package store.service
 
+import camp.nextstep.edu.missionutils.DateTimes
 import store.model.Promotion
 import java.io.File
 import java.text.DateFormat
@@ -13,6 +14,15 @@ class PromotionManager {
     init {
         promotions = loadPromotions()
     }
+
+    fun isPromotionDay(name: String?): Boolean {
+        if(name == null) return false
+        val promotion = promotions[name]
+        val today = DateTimes.now().toLocalDate()
+        if(promotion != null) return today in promotion.startDate .. promotion.endDate
+        return false
+    }
+
 
     private fun loadPromotions(): Map<String, Promotion> {
         val promotions = mutableMapOf<String, Promotion>()
